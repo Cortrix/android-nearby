@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.google.android.gms.nearby.messages.samples.nearbydevices;
 
 import android.app.Activity;
@@ -28,9 +27,6 @@ import android.widget.Toast;
  * functionality for this sample.
  */
 public class MainActivity extends AppCompatActivity {
-    private static final String MAIN_FRAGMENT_TAG = "main_fragment_tag";
-
-    private MainFragment mMainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,28 +34,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FragmentManager fm = getFragmentManager();
-        mMainFragment = (MainFragment) fm.findFragmentByTag(MAIN_FRAGMENT_TAG);
-
-        if (mMainFragment == null) {
-            mMainFragment = new MainFragment();
-            fm.beginTransaction().add(R.id.container, mMainFragment, MAIN_FRAGMENT_TAG).commit();
+        if (fm.findFragmentByTag(MainFragment.class.getName()) != null) {
+            fm.beginTransaction().add(R.id.container, new MainFragment(), MainFragment.class.getName()).commit();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mMainFragment.finishedResolvingNearbyPermissionError();
-        if (requestCode == Constants.REQUEST_RESOLVE_ERROR) {
+        if (requestCode == MainFragment.REQUEST_RESOLVE_ERROR) {
             // User was presented with the Nearby opt-in dialog and pressed "Allow".
             if (resultCode == Activity.RESULT_OK) {
-                // We track the pending subscription and publication tasks in MainFragment. Once
-                // a user gives consent to use Nearby, we execute those tasks.
-                mMainFragment.executePendingTasks();
+
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                // User was presented with the Nearby opt-in dialog and pressed "Deny". We cannot
-                // proceed with any pending subscription and publication tasks. Reset state.
-                mMainFragment.resetToDefaultState();
+
             } else {
                 Toast.makeText(this, "Failed to resolve error with code " + resultCode,
                         Toast.LENGTH_LONG).show();
